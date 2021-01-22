@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button id="btn">下载</button>
+</body>
+<script>
+    function ajax(url, callback, options) {
+            window.URL = window.URL || window.webkitURL;
+            var xhr = new XMLHttpRequest();
+            xhr.open('get', url, true);
+            if (options.responseType) {
+                xhr.responseType = options.responseType;
+            }
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    callback(xhr);
+                }
+            };
+            xhr.send();
+        }
+        function downloadAjax(url) {
+            let innerurl = url;// 文件地址
+            var name = url.replace(/(.*\/)*([^.]+).*/ig, '$2');
+            ajax(innerurl, function (xhr) {
+                let filename = name + '.' + innerurl.replace(/(.*\.)/, '');
+                let content = xhr.response;
+                let a = document.createElement('a');
+                let blob = new Blob([xhr.response]);
+                let url = window.URL.createObjectURL(blob);
+                a.href = url;
+                a.download = filename;
+                a.click();
+                window.URL.revokeObjectURL(url);
+            }, {
+                responseType: 'blob'
+            });
+        }
+        function download(url) {
+            if (url) {
+                downloadAjax(url);
+            }
+           
+        }
+    document.getElementById('btn').onclick = function () {
+        download('https://stream7.iqilu.com/10339/upload_transcode/202002/18/20200218114723HDu3hhxqIT.mp4')
+        download('http://zons.oss-cn-shenzhen.aliyuncs.com/upload/20201227/1609061880d3eb9a9233e52948740d7eb8c3062d14.png')
+    }
+</script>
+
+</html>
